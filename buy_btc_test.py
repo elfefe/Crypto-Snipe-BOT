@@ -20,7 +20,7 @@ try:
     book = client.get_order_book(symbol=symbol)
     ask = float(book['asks'][0][0])
 
-    # Calculate quantity of BTC
+    # Calculate quantity of XRP
     qty = buy_amount_usdc / ask
     filters = client.get_symbol_info(symbol)['filters']
     lot_size_filter = next(f for f in filters if f['filterType'] == 'LOT_SIZE')
