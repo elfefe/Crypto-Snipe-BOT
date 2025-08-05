@@ -1,5 +1,6 @@
 from binance.client import Client
 from dotenv import load_dotenv
+from decimal import Decimal, ROUND_DOWN
 import os
 
 load_dotenv()
@@ -11,9 +12,11 @@ client = Client(API_KEY, API_SECRET)
 symbol = "XRPUSDC"
 buy_amount_usdc = 50
 
-from decimal import Decimal, ROUND_DOWN
 def round_step_size(quantity, step_size):
-    return float(Decimal(str(quantity)).quantize(Decimal(str(step_size)), rounding=ROUND_DOWN))
+    step = Decimal(step_size)
+    q = Decimal(str(quantity))
+    rounded_qty = (q // step) * step
+    return float(rounded_qty)
 
 try:
     # Get current ask price
