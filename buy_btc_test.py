@@ -20,11 +20,12 @@ def round_step_size(quantity, step_size):
 try:
     # Get current ask price
     book = client.get_order_book(symbol=symbol)
-    ask = float(book['asks'][0][0])
 
     # Calculate quantity of BTC
     qty = buy_amount_usdc / ask
-    step = client.get_symbol_info(symbol)['filters'][2]['stepSize']
+    filters = client.get_symbol_info(symbol)['filters']
+    lot_size_filter = next(f for f in filters if f['filterType'] == 'LOT_SIZE')
+    step = lot_size_filter['stepSize']
     qty = round_step_size(qty, step)
 
     # Submit market buy order
