@@ -8,7 +8,7 @@ API_KEY = os.getenv("BINANCE_API_KEY")
 API_SECRET = os.getenv("BINANCE_API_SECRET")
 client = Client(API_KEY, API_SECRET)
 
-symbol = "BTCUSDC"
+symbol = "XRPUSDC"
 buy_amount_usdc = 50
 
 from decimal import Decimal, ROUND_DOWN
