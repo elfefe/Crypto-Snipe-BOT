@@ -1,16 +1,16 @@
 {
   "tokens": [
     {
-      "symbol": "TOWNSUSDT",
+      "symbol": "TOWNSUSDC",
       "buy_amount_usdt": 100,
       "stop_loss_pct": 20,
-      "take_profit_x": 50
+      "take_profit_x": 3
     },
     {
-      "symbol": "PROVEUSDT",
+      "symbol": "PROVEUSDC",
       "buy_amount_usdt": 100,
       "stop_loss_pct": 20,
-      "take_profit_x": 50
+      "take_profit_x": 3
     }
   ]
 }
