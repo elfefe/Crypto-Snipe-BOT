@@ -20,6 +20,7 @@ def round_step_size(quantity, step_size):
 try:
     # Get current ask price
     book = client.get_order_book(symbol=symbol)
+    ask = float(book['asks'][0][0])
 
     # Calculate quantity of BTC
     qty = buy_amount_usdc / ask
