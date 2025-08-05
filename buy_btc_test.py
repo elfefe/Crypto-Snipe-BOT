@@ -1,6 +1,4 @@
 from binance.client import Client
-from binance.enums import *
-from decimal import Decimal, ROUND_DOWN
 from dotenv import load_dotenv
 import os
 
@@ -11,33 +9,29 @@ API_SECRET = os.getenv("BINANCE_API_SECRET")
 client = Client(API_KEY, API_SECRET)
 
 symbol = "BTCUSDC"
-buy_amount_usdc = 50
-
-
-def round_step_size(quantity, step_size):
-    return float(Decimal(quantity).quantize(Decimal(step_size), rounding=ROUND_DOWN))
 
 try:
-    # Get current ask price
-    book = client.get_order_book(symbol=symbol)
-    ask = float(book['asks'][0][0])
+    # Get balance
+    balances = client.get_asset_balance(asset="BTC")
+    qty = float(balances["free"])
 
-    # Calculate quantity of BTC
-    qty = buy_amount_usdc / ask
+    if qty == 0:
+        raise Exception("No BTC available to sell.")
+
+    # Get LOT_SIZE filter for rounding
     filters = client.get_symbol_info(symbol)['filters']
     lot_size_filter = next(f for f in filters if f['filterType'] == 'LOT_SIZE')
     step = lot_size_filter['stepSize']
-    min_qty = float(lot_size_filter['minQty'])
-    qty = round_step_size(qty, step)
+    from decimal import Decimal, ROUND_DOWN
+    def round_step_size(quantity, step_size):
+        return float(Decimal(quantity).quantize(Decimal(step_size), rounding=ROUND_DOWN))
 
-    # Correction : vérifier minQty
-    if qty < min_qty:
-        raise ValueError(f"La quantité calculée ({qty}) est inférieure au minimum autorisé ({min_qty}).")
+    qty = round_step_size(qty, step_size=step)
 
-    # Submit market buy order
-    print(f"Attempting to buy {qty:.8f} BTC at approx {ask} USDC...")
-    order = client.order_market_buy(symbol=symbol, quantity=qty)
-    print("✅ Order executed:")
+    print(f"Selling {qty} BTC at market...")
+    order = client.order_market_sell(symbol=symbol, quantity=qty)
+
+    print("✅ Sell order executed:")
     for fill in order["fills"]:
         print(f"- Price: {fill['price']}, Qty: {fill['qty']}")
 
