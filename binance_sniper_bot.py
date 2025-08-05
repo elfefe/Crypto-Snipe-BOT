@@ -27,8 +27,12 @@ app = Flask(__name__)
 
 # Util
 
+
 def round_step_size(quantity, step_size):
-    return float(Decimal(quantity).quantize(Decimal(step_size), rounding=ROUND_DOWN))
+    step = Decimal(step_size)
+    q = Decimal(str(quantity))
+    rounded_qty = (q // step) * step
+    return float(rounded_qty)
 
 # Core trading logic
 
@@ -67,7 +71,7 @@ def track_token(symbol, buy_amount_usdt, stop_loss_pct, take_profit_x):
 
                     if ask >= status['buy_price'] * take_profit_x:
                         client.order_market_sell(symbol=symbol, quantity=float(order['executedQty']))
-                        status['status'] = f"Sold for 50x profit at {ask}"
+                        status['status'] = f"Sold for {take_profit_x}x profit at {ask}"
                         break
                     elif ask <= status['buy_price'] * (1 - stop_loss_pct / 100):
                         client.order_market_sell(symbol=symbol, quantity=float(order['executedQty']))
