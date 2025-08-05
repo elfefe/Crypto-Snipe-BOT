@@ -27,7 +27,12 @@ try:
     filters = client.get_symbol_info(symbol)['filters']
     lot_size_filter = next(f for f in filters if f['filterType'] == 'LOT_SIZE')
     step = lot_size_filter['stepSize']
+    min_qty = float(lot_size_filter['minQty'])
     qty = round_step_size(qty, step)
+
+    # Correction : vérifier minQty
+    if qty < min_qty:
+        raise ValueError(f"La quantité calculée ({qty}) est inférieure au minimum autorisé ({min_qty}).")
 
     # Submit market buy order
     print(f"Attempting to buy {qty:.8f} BTC at approx {ask} USDC...")
