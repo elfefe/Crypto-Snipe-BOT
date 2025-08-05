@@ -78,10 +78,8 @@ def track_token(symbol, buy_amount_usdt, stop_loss_pct, take_profit_x):
                         status['status'] = f"Stopped out at {ask}"
                         break
 
-                time.sleep(1)
             except Exception as e:
                 status['status'] = f"Error: {e}"
-                time.sleep(2)
 
     threading.Thread(target=run, daemon=True).start()
 
