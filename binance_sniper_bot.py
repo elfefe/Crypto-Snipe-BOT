@@ -7,7 +7,7 @@ import json
 from binance.client import Client
 from binance.enums import *
 from flask import Flask, jsonify, render_template
-from decimal import Decimal
+from decimal import Decimal, ROUND_DOWN
 from dotenv import load_dotenv
 import os
 
@@ -28,7 +28,7 @@ app = Flask(__name__)
 # Util
 
 def round_step_size(quantity, step_size):
-    return float(Decimal(quantity) - (Decimal(quantity) % Decimal(step_size)))
+    return float(Decimal(quantity).quantize(Decimal(step_size), rounding=ROUND_DOWN))
 
 # Core trading logic
 

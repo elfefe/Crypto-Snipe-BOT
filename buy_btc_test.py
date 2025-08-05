@@ -1,6 +1,6 @@
 from binance.client import Client
 from binance.enums import *
-from decimal import Decimal
+from decimal import Decimal, ROUND_DOWN
 from dotenv import load_dotenv
 import os
 
@@ -13,8 +13,9 @@ client = Client(API_KEY, API_SECRET)
 symbol = "BTCUSDC"
 buy_amount_usdc = 50
 
+
 def round_step_size(quantity, step_size):
-    return float(Decimal(quantity) - (Decimal(quantity) % Decimal(step_size)))
+    return float(Decimal(quantity).quantize(Decimal(step_size), rounding=ROUND_DOWN))
 
 try:
     # Get current ask price
