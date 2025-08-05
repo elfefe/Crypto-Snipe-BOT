@@ -52,13 +52,15 @@ def track_token(symbol, buy_amount_usdt, stop_loss_pct, take_profit_x):
 
                 if not status['bought']:
                     qty = float(buy_amount_usdt) / ask
-                    step = client.get_symbol_info(symbol)['filters'][2]['stepSize']
+                    # Correction : recherche du filtre LOT_SIZE
+                    filters = client.get_symbol_info(symbol)['filters']
+                    lot_size_filter = next(f for f in filters if f['filterType'] == 'LOT_SIZE')
+                    step = lot_size_filter['stepSize']
                     qty = round_step_size(qty, step)
                     order = client.order_market_buy(symbol=symbol, quantity=qty)
                     buy_price = float(order['fills'][0]['price'])
-                    status['buy_price'] = buy_price
                     status['bought'] = True
-                    status['status'] = f"Bought at {buy_price}"
+                    status['buy_price'] = buy_price
                 else:
                     pnl = (ask - status['buy_price']) / status['buy_price'] * 100
                     status['pnl'] = pnl
