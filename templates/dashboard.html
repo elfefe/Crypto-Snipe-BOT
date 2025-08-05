@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sniper Bot Dashboard</title>
+  <meta http-equiv="refresh" content="3">
+  <style>
+    body { font-family: Arial, sans-serif; background: #121212; color: #e0e0e0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 10px; border-bottom: 1px solid #333; text-align: center; }
+    h1 { color: #00ff99; }
+  </style>
+</head>
+<body>
+  <h1>Binance Sniper Bot Dashboard</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Buy Price</th>
+        <th>Current Price</th>
+        <th>PNL (%)</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for symbol, data in tokens.items() %}
+      <tr>
+        <td>{{ symbol }}</td>
+        <td>{{ data.buy_price or "-" }}</td>
+        <td>{{ data.current_price or "-" }}</td>
+        <td>{{ "%.2f"|format(data.pnl) }}</td>
+        <td>{{ data.status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
