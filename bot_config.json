@@ -2,13 +2,13 @@
   "tokens": [
     {
       "symbol": "TOWNSUSDC",
-      "buy_amount_usdt": 100,
+      "buy_amount_usdt": 50,
       "stop_loss_pct": 20,
       "take_profit_x": 3
     },
     {
       "symbol": "PROVEUSDC",
-      "buy_amount_usdt": 100,
+      "buy_amount_usdt": 50,
       "stop_loss_pct": 20,
       "take_profit_x": 3
     }

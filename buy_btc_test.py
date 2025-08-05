@@ -31,7 +31,7 @@ try:
     if qty < min_qty:
         raise ValueError(f"La quantité calculée ({qty}) est inférieure au minimum autorisé ({min_qty}).")
 
-    print(f"Buying {qty:.8f} {symbol} at approx {ask} USDC...")
+    print(f"Buying {qty:.8f} {symbol} at approx {ask} USDC...\n{lot_size_filter}")
     order = client.order_market_buy(symbol=symbol, quantity=qty)
 
     print("\u2705 Buy order executed:")
