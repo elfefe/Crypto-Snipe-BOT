@@ -9,31 +9,34 @@ API_SECRET = os.getenv("BINANCE_API_SECRET")
 client = Client(API_KEY, API_SECRET)
 
 symbol = "BTCUSDC"
+buy_amount_usdc = 50
+
+from decimal import Decimal, ROUND_DOWN
+def round_step_size(quantity, step_size):
+    return float(Decimal(str(quantity)).quantize(Decimal(str(step_size)), rounding=ROUND_DOWN))
 
 try:
-    # Get balance
-    balances = client.get_asset_balance(asset="BTC")
-    qty = float(balances["free"])
+    # Get current ask price
+    book = client.get_order_book(symbol=symbol)
+    ask = float(book['asks'][0][0])
 
-    if qty == 0:
-        raise Exception("No BTC available to sell.")
-
-    # Get LOT_SIZE filter for rounding
+    # Calculate quantity of BTC
+    qty = buy_amount_usdc / ask
     filters = client.get_symbol_info(symbol)['filters']
     lot_size_filter = next(f for f in filters if f['filterType'] == 'LOT_SIZE')
     step = lot_size_filter['stepSize']
-    from decimal import Decimal, ROUND_DOWN
-    def round_step_size(quantity, step_size):
-        return float(Decimal(quantity).quantize(Decimal(step_size), rounding=ROUND_DOWN))
+    min_qty = float(lot_size_filter['minQty'])
+    qty = round_step_size(qty, step)
 
-    qty = round_step_size(qty, step_size=step)
+    if qty < min_qty:
+        raise ValueError(f"La quantité calculée ({qty}) est inférieure au minimum autorisé ({min_qty}).")
 
-    print(f"Selling {qty} BTC at market...")
-    order = client.order_market_sell(symbol=symbol, quantity=qty)
+    print(f"Buying {qty:.8f} BTC at approx {ask} USDC...")
+    order = client.order_market_buy(symbol=symbol, quantity=qty)
 
-    print("✅ Sell order executed:")
+    print("\u2705 Buy order executed:")
     for fill in order["fills"]:
         print(f"- Price: {fill['price']}, Qty: {fill['qty']}")
 
 except Exception as e:
-    print("❌ Error:", e)
+    print("\u274c Error:", e)
